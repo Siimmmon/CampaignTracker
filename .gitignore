@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/.angular/
+**/dist/
+**/out-tsc/
+**/wwwroot/
+*.db
+*.db-shm
+*.db-wal
+publish/
+*.zip

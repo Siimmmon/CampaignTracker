@@ -1,0 +1,20 @@
+<a class="skip-link" href="#main-content">Skip to content</a>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/campaigns/new">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      Campaign Tracker
+    </a>
+    <nav aria-label="Campaigns" class="main-nav">
+      <a routerLink="/campaigns/new" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="icon icon-plus" aria-hidden="true"></span> New campaign
+      </a>
+      <a routerLink="/campaigns/find" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="icon icon-search" aria-hidden="true"></span> Find a campaign
+      </a>
+    </nav>
+  </aside>
+  <main class="workspace" id="main-content" tabindex="-1">
+    <div class="workspace-inner"><router-outlet /></div>
+  </main>
+</div>

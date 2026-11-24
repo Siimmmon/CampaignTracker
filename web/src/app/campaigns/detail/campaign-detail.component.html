@@ -1,0 +1,62 @@
+<a class="text-link back-link" routerLink="/campaigns/find"><span aria-hidden="true">←</span> Find a campaign</a>
+
+@let view = state();
+@switch (view.status) {
+  @case ('loading') {
+    <h1>Campaign details</h1>
+    <p class="status-message" role="status">Loading campaign…</p>
+  }
+  @case ('invalid') {
+    <h1>Invalid campaign ID</h1>
+    <p class="status-message" role="status">Enter a positive campaign ID to view a campaign.</p>
+  }
+  @case ('missing') {
+    <h1>Campaign not found</h1>
+    <p class="status-message" role="status">Check the campaign ID and try again.</p>
+  }
+  @case ('error') {
+    <h1>Campaign unavailable</h1>
+    <p class="status-message" role="alert">The campaign could not be loaded.</p>
+    <button class="button" type="button" (click)="reload()">Try again</button>
+  }
+  @case ('ready') {
+    <header class="page-header">
+      <h1>{{ view.campaign.name }}</h1>
+      <p>Campaign #{{ view.campaign.id }}</p>
+    </header>
+
+    <section class="panel" aria-labelledby="schedule-title">
+      <h2 id="schedule-title">Schedule</h2>
+      <dl class="schedule">
+        <div><dt>Start date</dt><dd>{{ view.campaign.startDate | date:'mediumDate':'UTC' }}</dd></div>
+        <div><dt>End date</dt><dd>{{ view.campaign.endDate | date:'mediumDate':'UTC' }}</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel events-panel" aria-labelledby="events-title">
+      <div class="section-header">
+        <h2 id="events-title">Campaign events</h2>
+        <span class="event-count">{{ view.campaign.events.length }}</span>
+      </div>
+      @if (!view.campaign.events.length) {
+        <p class="empty-message">No events have been recorded for this campaign.</p>
+      } @else {
+        <div class="table-wrap">
+          <table aria-labelledby="events-title">
+            <thead>
+              <tr><th scope="col">Event type</th><th scope="col">Timestamp (UTC)</th></tr>
+            </thead>
+            <tbody>
+              @for (event of view.campaign.events; track event.id) {
+                <tr>
+                  <td>{{ event.eventType }}</td>
+                  <td><time [attr.datetime]="event.timestamp">{{ event.timestamp | date:'MMM d, y, HH:mm:ss':'UTC' }}</time></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+}

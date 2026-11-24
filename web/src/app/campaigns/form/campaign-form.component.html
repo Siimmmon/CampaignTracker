@@ -1,0 +1,63 @@
+<header class="page-header">
+  <h1>Create a campaign</h1>
+  <p>Set a name and schedule to start tracking campaign activity.</p>
+</header>
+
+<div class="page-grid">
+  <section class="panel" aria-labelledby="campaign-form-title">
+    <h2 id="campaign-form-title">Campaign details</h2>
+    <p class="panel-intro">All fields are required.</p>
+
+    <form class="campaign-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (serverErrors().length) {
+        <div class="form-alert" role="alert">
+          @for (message of serverErrors(); track $index) { <div>{{ message }}</div> }
+        </div>
+      }
+
+      <div class="field">
+        <label for="name">Campaign name</label>
+        <input id="name" formControlName="name" placeholder="e.g. Spring product launch" required
+          aria-describedby="name-help" [attr.aria-invalid]="name.touched && name.invalid">
+        <div id="name-help" class="field-help" [class.error]="name.touched && name.invalid" aria-live="polite">
+          @if (name.touched && name.hasError('required')) { Enter a campaign name. }
+          @else if (name.touched && name.hasError('plainText')) { Use plain text without angle brackets or control characters. }
+          @else { Up to 120 characters. }
+        </div>
+      </div>
+
+      <div class="date-grid">
+        <div class="field">
+          <label for="start-date">Start date</label>
+          <input id="start-date" type="date" formControlName="startDate" required
+            aria-describedby="start-help" [attr.aria-invalid]="startDate.touched && startDate.invalid">
+          <div id="start-help" class="field-help error" aria-live="polite">
+            @if (startDate.touched && startDate.invalid) { Enter a valid start date. }
+          </div>
+        </div>
+        <div class="field">
+          <label for="end-date">End date</label>
+          <input id="end-date" type="date" formControlName="endDate" required
+            aria-describedby="end-help" [attr.aria-invalid]="endDate.touched && (endDate.invalid || form.hasError('dateOrder'))">
+          <div id="end-help" class="field-help error" aria-live="polite">
+            @if (endDate.touched && endDate.invalid) { Enter a valid end date. }
+            @else if (endDate.touched && form.hasError('dateOrder')) { End date must be after the start date. }
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="button" type="submit" [disabled]="saving()">
+          @if (saving()) { Creating… } @else { Create campaign <span aria-hidden="true">→</span> }
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <aside class="lookup-panel" aria-labelledby="existing-campaign-title">
+    <span class="lookup-mark" aria-hidden="true"><span class="icon icon-search"></span></span>
+    <h2 id="existing-campaign-title">Already have a campaign?</h2>
+    <p>Use its campaign ID to view the schedule and associated events.</p>
+    <a class="text-link" routerLink="/campaigns/find">Find a campaign <span aria-hidden="true">↗</span></a>
+  </aside>
+</div>

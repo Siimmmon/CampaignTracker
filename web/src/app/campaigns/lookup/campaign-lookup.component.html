@@ -1,0 +1,22 @@
+<header class="page-header">
+  <h1>Find a campaign</h1>
+  <p>Open an existing campaign using its ID.</p>
+</header>
+
+<section class="panel narrow-panel" aria-labelledby="lookup-title">
+  <h2 id="lookup-title">Campaign lookup</h2>
+  <p class="panel-intro">The ID is shown on the campaign detail page and in its URL.</p>
+  <form class="campaign-form" (submit)="find($event, campaignId.value)" novalidate>
+    <div class="field">
+      <label for="campaign-id">Campaign ID</label>
+      <input #campaignId id="campaign-id" type="text" inputmode="numeric" placeholder="e.g. 42" required
+        aria-describedby="lookup-help" [attr.aria-invalid]="error()" (input)="error.set(false)">
+      <div id="lookup-help" class="field-help error" aria-live="polite">
+        @if (error()) { Enter a valid positive campaign ID. }
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="button" type="submit">View campaign <span aria-hidden="true">→</span></button>
+    </div>
+  </form>
+</section>
