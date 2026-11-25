@@ -4,7 +4,7 @@ An Angular 21 and ASP.NET Core 10 application for creating marketing campaigns a
 
 ## Technical assessment
 
-- **Part 1 — Mini Practical.** The campaign API, Angular app, EF Core migration, and Azure Bicep template. Please refer below.
+- **Part 1 — Mini Practical.** [Run locally](#run-locally) · [Campaign API and security](#api) · [Angular campaign code](web/src/app/campaigns/) · [EF Core migration](#apply-the-ef-core-migration) · [Azure Bicep](#azure-deployment)
 - **Part 2 — AI Code Review & Workflow.** [Review findings](assessment/part-2/README.md) · [Final C# rewrite](assessment/part-2/OrderQueries.cs) · [Prompt, raw AI response, and three changes](assessment/part-2/AI-WORKFLOW.md)
 - **Part 3 — AI Context Configuration.** [AGENTS.md](AGENTS.md) defines the project conventions for AI coding agents.
 
@@ -32,6 +32,8 @@ Open [Campaign Tracker](http://127.0.0.1:4200). Create a campaign with an end da
 
 ## Project structure
 
+The ASP.NET Core API groups controllers, contracts, entities, and EF Core configuration by responsibility so each part of a request is easy to locate. The Angular app groups the form, lookup, detail view, and HTTP service together so reviewers can follow the campaign workflow in one folder. Azure infrastructure and the Part 2 review each have their own folder for easy reference.
+
 | Location | Responsibility |
 | --- | --- |
 | `api/Controllers/` | HTTP routes and status codes |
@@ -41,6 +43,8 @@ Open [Campaign Tracker](http://127.0.0.1:4200). Create a campaign with an end da
 | `api/Data/Migrations/` | SQL Server initial migration and EF Core model snapshot |
 | `web/src/app/campaigns/` | Angular campaign form, lookup, detail, and HttpClient service |
 | `infra/` | Bicep for the Linux App Service plan, App Service, and connection string setting |
+| `assessment/part-2/` | Order query review, final rewrite, and AI workflow evidence |
+| `AGENTS.md` | Repository-wide instructions for AI coding agents |
 
 ## API
 
