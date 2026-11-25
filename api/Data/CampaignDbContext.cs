@@ -11,6 +11,9 @@ public sealed class CampaignDbContext(DbContextOptions<CampaignDbContext> option
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        if (Database.IsSqlServer())
+            modelBuilder.HasDefaultSchema("dbo");
+
         var utcConverter = new ValueConverter<DateTime, DateTime>(
             value => value,
             value => DateTime.SpecifyKind(value, DateTimeKind.Utc));
@@ -29,7 +32,7 @@ public sealed class CampaignDbContext(DbContextOptions<CampaignDbContext> option
 
         modelBuilder.Entity<Event>(campaignEvent =>
         {
-            campaignEvent.Property(item => item.EventType).IsRequired().HasMaxLength(80);
+            campaignEvent.Property(item => item.EventType).IsRequired().HasMaxLength(Event.MaxEventTypeLength);
             campaignEvent.Property(item => item.Timestamp).HasConversion(utcConverter);
             campaignEvent.HasIndex(item => new { item.CampaignId, item.Timestamp, item.Id })
                 .IsDescending(false, true, true);

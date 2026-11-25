@@ -1,0 +1,7 @@
+# Campaign Tracker project instructions
+
+1. Keep HTTP endpoints in `api/Controllers`, request and response models in `api/Contracts`, EF Core configuration and migrations in `api/Data`, and Angular campaign features in `web/src/app/campaigns`.
+2. Validate writes on the API and bind user-supplied values as SQL parameters. Use EF Core LINQ and `SaveChangesAsync` for normal reads and writes. When raw SQL is needed, use parameterized `FromSql` or `ExecuteSql`, or bind explicit `DbParameter` values to fixed SQL text. Render user content with Angular text interpolation and keep connection strings with credentials in environment configuration or a secret store.
+3. Preserve API routes and response shapes unless the task calls for a contract change. Keep Angular validation aligned with the API and return typed `Observable`s from `HttpClient` service methods.
+4. Bound list queries, project the fields the caller uses, and pass the request cancellation token to async EF Core calls. Check SQL command counts when changing how a read loads related data.
+5. Run the affected build and focused checks before reporting completion. When fixing a bug, reproduce it first and add or update a focused regression test if existing tests don’t cover the failure. Check valid and rejected requests when changing validation. For SQL Server schema changes, review the generated migration and verify that the EF model snapshot matches.

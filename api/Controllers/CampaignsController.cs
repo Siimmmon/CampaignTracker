@@ -44,13 +44,21 @@ public sealed class CampaignsController(CampaignDbContext database) : Controller
         {
             Name = request.Name!,
             StartDate = request.StartDate!.Value,
-            EndDate = request.EndDate!.Value
+            EndDate = request.EndDateUtc!.Value,
+            Events = (request.Events ?? [])
+                .Select(item => new Event { EventType = item!.EventType!, Timestamp = item.Timestamp!.Value })
+                .ToList()
         };
 
         database.Campaigns.Add(campaign);
         await database.SaveChangesAsync(cancellationToken);
 
-        var response = new CampaignResponse(campaign.Id, campaign.Name, campaign.StartDate, campaign.EndDate, []);
+        var events = campaign.Events
+            .OrderByDescending(item => item.Timestamp)
+            .ThenByDescending(item => item.Id)
+            .Select(item => new EventResponse(item.Id, item.EventType, item.Timestamp, item.CampaignId))
+            .ToList();
+        var response = new CampaignResponse(campaign.Id, campaign.Name, campaign.StartDate, campaign.EndDate, events);
         return CreatedAtAction(nameof(GetById), new { id = campaign.Id }, response);
     }
 }

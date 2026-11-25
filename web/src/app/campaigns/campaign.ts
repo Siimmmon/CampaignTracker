@@ -17,6 +17,7 @@ export interface CreateCampaign {
   name: string;
   startDate: string;
   endDate: string;
+  events?: Pick<CampaignEvent, 'eventType' | 'timestamp'>[];
 }
 
 export function parseCampaignId(value: string): number | null {

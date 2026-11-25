@@ -6,7 +6,7 @@
 <div class="page-grid">
   <section class="panel" aria-labelledby="campaign-form-title">
     <h2 id="campaign-form-title">Campaign details</h2>
-    <p class="panel-intro">All fields are required.</p>
+    <p class="panel-intro">Name and dates are required.</p>
 
     <form class="campaign-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
       @if (serverErrors().length) {
@@ -45,6 +45,57 @@
           </div>
         </div>
       </div>
+
+      <section class="event-editor" aria-labelledby="event-editor-title">
+        <div class="event-editor-header">
+          <div>
+            <h2 id="event-editor-title">Campaign events <span class="optional-label">Optional</span></h2>
+            <p class="panel-intro">Add events to save with this campaign.</p>
+          </div>
+          <button class="button button-secondary" type="button" (click)="addEvent()"
+            [disabled]="saving() || events.length >= maxEvents">
+            <span class="icon icon-plus" aria-hidden="true"></span> Add event
+          </button>
+        </div>
+
+        @if (events.length >= maxEvents) {
+          <p class="panel-intro" role="status">You can add up to {{ maxEvents }} events.</p>
+        }
+
+        <div class="event-rows" formArrayName="events">
+          @for (event of events.controls; track event; let index = $index) {
+            @let eventType = event.controls.eventType;
+            @let timestamp = event.controls.timestamp;
+            @let outsideCampaignDates = isOutsideCampaignDates(timestamp);
+            <fieldset class="event-fields" [formGroupName]="index">
+              <legend>Event {{ index + 1 }}</legend>
+              <div class="event-field-grid">
+                <div class="field">
+                  <label [for]="'event-type-' + index">Event type</label>
+                  <input [id]="'event-type-' + index" formControlName="eventType" placeholder="e.g. Email opened" required
+                    [attr.aria-describedby]="'event-type-help-' + index" [attr.aria-invalid]="eventType.touched && eventType.invalid">
+                  <div [id]="'event-type-help-' + index" class="field-help error" aria-live="polite">
+                    @if (eventType.touched && eventType.hasError('required')) { Enter an event type. }
+                    @else if (eventType.touched && eventType.hasError('length')) { Use {{ maxEventTypeLength }} characters or fewer. }
+                    @else if (eventType.touched && eventType.hasError('plainText')) { Use plain text without angle brackets or control characters. }
+                  </div>
+                </div>
+                <div class="field">
+                  <label [for]="'event-time-' + index">Timestamp</label>
+                  <input [id]="'event-time-' + index" type="datetime-local" formControlName="timestamp" required
+                    [attr.aria-describedby]="'event-time-help-' + index" [attr.aria-invalid]="timestamp.touched && (timestamp.invalid || outsideCampaignDates)">
+                  <div [id]="'event-time-help-' + index" class="field-help error" aria-live="polite">
+                    @if (timestamp.touched && timestamp.invalid) { Enter a valid timestamp. }
+                    @else if (timestamp.touched && outsideCampaignDates) { Timestamp must be within the campaign dates. }
+                  </div>
+                </div>
+              </div>
+              <button class="button button-secondary event-remove" type="button" (click)="removeEvent(index)"
+                [disabled]="saving()" [attr.aria-label]="'Remove event ' + (index + 1)">Remove event</button>
+            </fieldset>
+          }
+        </div>
+      </section>
 
       <div class="form-actions">
         <button class="button" type="submit" [disabled]="saving()">
