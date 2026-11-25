@@ -66,7 +66,7 @@ The API reads ISO dates as UTC midnight and accepts ISO timestamps with offsets.
 
 EF Core reads the requested campaign and its projected event fields in a single no-tracking query. The index begins with `CampaignId` and follows with descending `Timestamp` and `Id`, which also provides a stable order when timestamps match.
 
-### Input handling
+### Security - Input handling
 
 - **Input validation and sanitization.** The POST trims campaign names and event types, rejects angle brackets and embedded control characters, and limits names to 120 characters and event types to 80. Both campaign dates are required, the end must be strictly later than the start, and each event timestamp must fall within that schedule. The database check constraint also enforces campaign date order. [api/Contracts/CreateCampaignRequest.cs](api/Contracts/CreateCampaignRequest.cs#L25) · [api/Contracts/CreateCampaignEventRequest.cs](api/Contracts/CreateCampaignEventRequest.cs#L8)
 - **SQL injection protection.** EF Core sends insert values as SQL parameters. Names containing apostrophes and ampersands are handled as ordinary data. [api/Controllers/CampaignsController.cs](api/Controllers/CampaignsController.cs#L53)
